@@ -5,10 +5,8 @@ import (
 	"testing"
 )
 
-func TestNextToken(t *testing.T) {
-	input := `=+(){},;`
-
-	tests := []struct {
+func TestGetToken(t *testing.T) {
+	tokenSet := []struct {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
@@ -23,17 +21,19 @@ func TestNextToken(t *testing.T) {
 		{token.EOF, ""},
 	}
 
+	input := "=+(){},;"
 	lexer := NewLexer(input)
 
-	for _, tt := range tests {
-		token := lexer.NextToken()
+	for _, ts := range tokenSet {
+		token := lexer.GetToken()
 
-		if token.Type != tt.expectedType {
-			t.Errorf("")
+		if token.Type != ts.expectedType {
+			t.Errorf("expected: %v, got: %v", ts.expectedType, token.Type)
 		}
 
-		if token.Literal != tt.expectedLiteral {
-			t.Errorf("")
+		if token.Literal != ts.expectedLiteral {
+			t.Errorf("expected: %v, got: %v", ts.expectedLiteral, token.Literal)
 		}
+		lexer.ReadChar()
 	}
 }
