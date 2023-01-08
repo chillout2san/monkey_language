@@ -62,13 +62,15 @@ func TestGetToken(t *testing.T) {
 	for i, ts := range tokenSet {
 		token := lexer.GetToken()
 
-		if token.Type != ts.expectedType {
-			t.Errorf("index: %d, expected: %v, got: %v", i, ts.expectedType, token.Type)
-		}
+		// if token.Type != ts.expectedType {
+		// 	t.Errorf("index: %d, expected: %v, got: %v", i, ts.expectedType, token.Type)
+		// }
+		t.Errorf("index: %d, expected: %v, got: %v", i, ts.expectedType, token.Type)
 
-		if token.Literal != ts.expectedLiteral {
-			t.Errorf("index: %d, expected: %v, got: %v", i, ts.expectedLiteral, token.Literal)
-		}
+		// if token.Literal != ts.expectedLiteral {
+		// 	t.Errorf("index: %d, expected: %v, got: %v", i, ts.expectedLiteral, token.Literal)
+		// }
+		t.Errorf("index: %d, expected: %v, got: %v", i, ts.expectedLiteral, token.Literal)
 		lexer.ReadChar()
 	}
 }

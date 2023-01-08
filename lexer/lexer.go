@@ -29,6 +29,10 @@ func (l *Lexer) GetToken() token.Token {
 	var tokenType token.TokenType
 	var literal string
 
+	for l.char == ' ' || l.char == '\n' || l.char == '\r' || l.char == '\t' {
+		l.ReadChar()
+	}
+
 	switch l.char {
 	case '=':
 		tokenType = token.ASSIGN
@@ -84,8 +88,6 @@ func (l *Lexer) readIdentifier() string {
 // 字句解析器のインスタンスへのポインタを返却する
 // 一文字読み込んだ状態でスタートする
 func NewLexer(input string) *Lexer {
-	l := &Lexer{input: input}
-	l.ReadChar()
-	l.position = 0
+	l := &Lexer{input: input, position: 0, char: input[0]}
 	return l
 }
