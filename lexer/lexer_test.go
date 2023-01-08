@@ -10,28 +10,63 @@ func TestGetToken(t *testing.T) {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
+		{token.LET, "let"},
+		{token.IDENT, "five"},
 		{token.ASSIGN, "="},
-		{token.PLUS, "+"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "ten"},
+		{token.ASSIGN, "="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "add"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
 		{token.L_PAREN, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.IDENT, "y"},
 		{token.R_PAREN, ")"},
 		{token.L_BRACE, "{"},
+		{token.IDENT, "x"},
+		{token.PLUS, "+"},
+		{token.IDENT, "y"},
 		{token.R_BRACE, "}"},
-		{token.COMMA, ","},
 		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "result"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "add"},
+		{token.L_PAREN, "("},
+		{token.IDENT, "five"},
+		{token.COMMA, ","},
+		{token.IDENT, "ten"},
+		{token.R_PAREN, ")"},
+		{token.SEMICOLON, ""},
 		{token.EOF, ""},
 	}
 
-	input := "=+(){},;"
+	input := `let five = 5;
+	let ten = 10;
+
+	let add = fn(x, y) {
+		x + y
+	};
+
+	let result = add(five, ten);
+	`
 	lexer := NewLexer(input)
 
 	for _, ts := range tokenSet {
 		token := lexer.GetToken()
 
-		if token.Type != ts.expectedType {
+		if token.Type == ts.expectedType {
 			t.Errorf("expected: %v, got: %v", ts.expectedType, token.Type)
 		}
 
-		if token.Literal != ts.expectedLiteral {
+		if token.Literal == ts.expectedLiteral {
 			t.Errorf("expected: %v, got: %v", ts.expectedLiteral, token.Literal)
 		}
 		lexer.ReadChar()

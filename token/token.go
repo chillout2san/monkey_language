@@ -9,32 +9,45 @@ type Token struct {
 
 const (
 	// トークンや文字が未知であること
-	ILLEGAL = "ILLEGAL"
+	ILLEGAL TokenType = "ILLEGAL"
 
 	// 終端記号
-	EOF = "EOF"
+	EOF TokenType = "EOF"
 
 	// 識別子
-	IDENT = "IDENT"
+	IDENT TokenType = "IDENT"
 
 	// 数値型
-	INT = "INT"
+	INT TokenType = "INT"
 
 	// 代入の演算子
-	ASSIGN = "="
+	ASSIGN TokenType = "="
 
 	// 足し算の演算子
-	PLUS = "+"
+	PLUS TokenType = "+"
 
 	// 区切り文字
-	COMMA     = ","
-	SEMICOLON = ";"
-	L_PAREN   = "("
-	R_PAREN   = ")"
-	L_BRACE   = "{"
-	R_BRACE   = "}"
+	COMMA     TokenType = ","
+	SEMICOLON TokenType = ";"
+	L_PAREN   TokenType = "("
+	R_PAREN   TokenType = ")"
+	L_BRACE   TokenType = "{"
+	R_BRACE   TokenType = "}"
 
 	// キーワード
-	FUNCTION = "FUNCTION"
-	LET      = "LET"
+	FUNCTION TokenType = "FUNCTION"
+	LET      TokenType = "LET"
 )
+
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+// キーワードか識別子かを判定して返却する
+func LookupIdent(ident string) TokenType {
+	if keyword, ok := keywords[ident]; ok {
+		return keyword
+	}
+	return IDENT
+}

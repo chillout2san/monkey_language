@@ -8,27 +8,25 @@ import (
 
 // 字句解析器
 type Lexer struct {
-	input        string // 解析対象の文字列
-	position     int    // 入力における現在の位置
-	nextPosition int    // これから読み込む位置
-	char         byte   // 現在読み込み終わった文字
+	input    string // 解析対象の文字列
+	position int    // 入力における現在の位置
+	char     byte   // 現在読み込んでいる文字
 }
 
 // 解析対象の文字列を一文字分読み込む
 func (l *Lexer) ReadChar() {
-	var isEnd = l.nextPosition >= len(l.input)
-	if isEnd {
+	var nextPosition = l.position + 1
+	if nextPosition+1 >= len(l.input) {
 		l.char = 0
 	} else {
-		l.char = l.input[l.nextPosition]
+		l.char = l.input[nextPosition]
 	}
-	l.position = l.nextPosition
-	l.nextPosition += 1
+	l.position = nextPosition
 }
 
 // 現在の文字のトークンを識別して返却する
 func (l *Lexer) GetToken() token.Token {
-	var tokenType string
+	var tokenType token.TokenType
 	var literal string
 
 	switch l.char {
@@ -50,6 +48,13 @@ func (l *Lexer) GetToken() token.Token {
 		tokenType = token.R_BRACE
 	case 0:
 		tokenType = token.EOF
+	default:
+		if l.isLetter() {
+			literal := l.readIdentifier()
+			return token.Token{Type: token.LookupIdent(literal), Literal: literal}
+		} else {
+			return token.Token{Type: token.ILLEGAL, Literal: string(l.char)}
+		}
 	}
 
 	if tokenType == token.EOF {
@@ -58,7 +63,22 @@ func (l *Lexer) GetToken() token.Token {
 		literal = string(l.char)
 	}
 
-	return token.Token{Type: token.TokenType(tokenType), Literal: literal}
+	return token.Token{Type: tokenType, Literal: literal}
+}
+
+// 現在読み込んでいる文字がキーワードもしくは識別子の一部かを判別するため、
+// アルファベットかアンダースコアがどうか判定する
+func (l *Lexer) isLetter() bool {
+	return 'a' <= l.char && l.char <= 'z' || 'A' <= l.char && l.char <= 'Z' || l.char == '_'
+}
+
+// 現在読み込んでいる文字からキーワードもしくは識別子を抜き出す
+func (l *Lexer) readIdentifier() string {
+	position := l.position
+	for l.isLetter() {
+		l.ReadChar()
+	}
+	return l.input[position:l.position]
 }
 
 // 字句解析器のインスタンスへのポインタを返却する
@@ -66,5 +86,6 @@ func (l *Lexer) GetToken() token.Token {
 func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.ReadChar()
+	l.position = 0
 	return l
 }
