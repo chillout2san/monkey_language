@@ -14,9 +14,9 @@ type Lexer struct {
 }
 
 // 解析対象の文字列を一文字分読み込む
-func (l *Lexer) ReadChar() {
+func (l *Lexer) readChar() {
 	var nextPosition = l.position + 1
-	if nextPosition+1 >= len(l.input) {
+	if nextPosition >= len(l.input) {
 		l.char = 0
 	} else {
 		l.char = l.input[nextPosition]
@@ -29,8 +29,9 @@ func (l *Lexer) GetToken() token.Token {
 	var tokenType token.TokenType
 	var literal string
 
+	// 現在の文字がホワイトスペースだった場合は読み飛ばす
 	for l.char == ' ' || l.char == '\n' || l.char == '\r' || l.char == '\t' {
-		l.ReadChar()
+		l.readChar()
 	}
 
 	switch l.char {
@@ -56,6 +57,9 @@ func (l *Lexer) GetToken() token.Token {
 		if l.isLetter() {
 			literal := l.readIdentifier()
 			return token.Token{Type: token.LookupIdent(literal), Literal: literal}
+		} else if l.isDigit() {
+			literal := l.readNumber()
+			return token.Token{Type: token.INT, Literal: literal}
 		} else {
 			return token.Token{Type: token.ILLEGAL, Literal: string(l.char)}
 		}
@@ -67,22 +71,37 @@ func (l *Lexer) GetToken() token.Token {
 		literal = string(l.char)
 	}
 
+	l.readChar()
 	return token.Token{Type: tokenType, Literal: literal}
 }
 
 // 現在読み込んでいる文字がキーワードもしくは識別子の一部かを判別するため、
 // アルファベットかアンダースコアがどうか判定する
 func (l *Lexer) isLetter() bool {
-	return 'a' <= l.char && l.char <= 'z' || 'A' <= l.char && l.char <= 'Z' || l.char == '_'
+	return ('a' <= l.char && l.char <= 'z') || ('A' <= l.char && l.char <= 'Z') || l.char == '_'
 }
 
-// 現在読み込んでいる文字からキーワードもしくは識別子を抜き出す
+// 現在読み込んでいる位置からキーワードもしくは識別子の塊一つを抜き出す
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for l.isLetter() {
-		l.ReadChar()
+		l.readChar()
 	}
 	return l.input[position:l.position]
+}
+
+// 現在読み込んでいる位置から数値の塊一つを抜き出す
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for l.isDigit() {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+// 現在読み込んでいる文字が数値かどうか
+func (l *Lexer) isDigit() bool {
+	return '0' <= l.char && l.char <= '9'
 }
 
 // 字句解析器のインスタンスへのポインタを返却する
