@@ -24,6 +24,16 @@ func (l *Lexer) readChar() {
 	l.position = nextPosition
 }
 
+// 現在読み込んでいる文字の次の文字を返却する
+// positionの位置は変更しない
+func (l *Lexer) peekChar() byte {
+	var nextPosition = l.position + 1
+	if nextPosition >= len(l.input) {
+		return 0
+	}
+	return l.input[nextPosition]
+}
+
 // 現在の文字のトークンを識別して返却する
 func (l *Lexer) GetToken() token.Token {
 	var tokenType token.TokenType
@@ -36,6 +46,15 @@ func (l *Lexer) GetToken() token.Token {
 
 	switch l.char {
 	case '=':
+		// イコールの演算子かどうか
+		if l.peekChar() == '=' {
+			char := l.char
+			l.readChar()
+			tokenType = token.EQ
+			literal := string(char) + string(l.char)
+			l.readChar()
+			return token.Token{Type: token.EQ, Literal: literal}
+		}
 		tokenType = token.ASSIGN
 	case '+':
 		tokenType = token.PLUS
@@ -46,6 +65,14 @@ func (l *Lexer) GetToken() token.Token {
 	case '/':
 		tokenType = token.SLASH
 	case '!':
+		// notイコールの演算子かどうか
+		if l.peekChar() == '=' {
+			char := l.char
+			l.readChar()
+			literal := string(char) + string(l.char)
+			l.readChar()
+			return token.Token{Type: token.NOT_EQ, Literal: literal}
+		}
 		tokenType = token.BANG
 	case '<':
 		tokenType = token.LT
