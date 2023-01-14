@@ -20,11 +20,15 @@ const (
 	// 数値型
 	INT TokenType = "INT"
 
-	// 代入の演算子
-	ASSIGN TokenType = "="
-
-	// 足し算の演算子
-	PLUS TokenType = "+"
+	// 演算子
+	ASSIGN   TokenType = "="
+	PLUS     TokenType = "+"
+	MINUS    TokenType = "-"
+	ASTERISK TokenType = "*"
+	SLASH    TokenType = "/"
+	BANG     TokenType = "!"
+	LT       TokenType = "<"
+	GT       TokenType = ">"
 
 	// 区切り文字
 	COMMA     TokenType = ","

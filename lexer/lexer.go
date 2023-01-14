@@ -39,6 +39,18 @@ func (l *Lexer) GetToken() token.Token {
 		tokenType = token.ASSIGN
 	case '+':
 		tokenType = token.PLUS
+	case '-':
+		tokenType = token.MINUS
+	case '*':
+		tokenType = token.ASTERISK
+	case '/':
+		tokenType = token.SLASH
+	case '!':
+		tokenType = token.BANG
+	case '<':
+		tokenType = token.LT
+	case '>':
+		tokenType = token.GT
 	case ',':
 		tokenType = token.COMMA
 	case ';':
