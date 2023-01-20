@@ -55,6 +55,7 @@ func (l *Lexer) GetToken() token.Token {
 			l.readChar()
 			return token.Token{Type: token.EQ, Literal: literal}
 		}
+		// 代入の演算子だった場合こちらへ
 		tokenType = token.ASSIGN
 	case '+':
 		tokenType = token.PLUS
