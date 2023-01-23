@@ -2,6 +2,9 @@ package token
 
 type TokenType string
 
+// TODO: Literalいらない気がする。
+// Tokenは構造体型で良いとして、valueだけで良いかも？
+// IDENTが微妙なので、それならiotaで数値型にする？
 type Token struct {
 	Type    TokenType
 	Literal string
