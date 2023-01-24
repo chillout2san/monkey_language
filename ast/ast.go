@@ -17,12 +17,15 @@ type Identifier struct {
 	Value string
 }
 
+// 式であることを宣言するための空メソッド
 func (i *Identifier) expressionNode() {}
 
+// 宣言した識別子を返却する
 func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
 }
 
+// 識別子の中身の値を返却する
 func (i *Identifier) String() string {
 	return i.Value
 }
@@ -67,6 +70,7 @@ type ExpressionStatement struct {
 	Expression Expression
 }
 
+// 文であることを宣言する空メソッド
 func (e *ExpressionStatement) statementNode() {}
 
 func (e *ExpressionStatement) TokenLiteral() string {
@@ -93,13 +97,17 @@ func (l *LetStatement) TokenLiteral() string {
 	return l.Token.Literal
 }
 
+// let文を復元して文字列で出力する
 func (l *LetStatement) String() string {
 	var out bytes.Buffer
 
+	// letとホワイトスペース
 	out.WriteString(l.TokenLiteral() + " ")
+	// 識別子の名前
 	out.WriteString(l.Name.String())
 	out.WriteString(" = ")
 
+	// let文の値があれば出力
 	if l.Value != nil {
 		out.WriteString(l.Value.String())
 	}
@@ -121,11 +129,14 @@ func (r *ReturnStatement) TokenLiteral() string {
 	return r.Token.Literal
 }
 
+// return文を復元して文字列で出力する
 func (r *ReturnStatement) String() string {
 	var out bytes.Buffer
 
+	// returnとホワイトスペース
 	out.WriteString(r.TokenLiteral() + " ")
 
+	// return文の値があれば出力
 	if r.Value != nil {
 		out.WriteString(r.Value.String())
 	}

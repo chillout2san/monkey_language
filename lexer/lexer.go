@@ -35,11 +35,13 @@ func (l *Lexer) peekChar() byte {
 }
 
 // 現在の文字のトークンを識別して返却する
+// 現在の文字がホワイトスペースだった場合は読み飛ばす
+// 解析対象の文字列を一文字読み進める
 func (l *Lexer) GetToken() token.Token {
 	var tokenType token.TokenType
 	var literal string
 
-	// 現在の文字がホワイトスペースだった場合は読み飛ばす
+	// ホワイトスペースカット
 	for l.char == ' ' || l.char == '\n' || l.char == '\r' || l.char == '\t' {
 		l.readChar()
 	}
